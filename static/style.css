@@ -65,7 +65,7 @@ button:hover {
 }
 
 .history-slider.open {
-    width: 400px;
+    width: 500px;
 }
 
 .slider-header {
@@ -88,17 +88,21 @@ button:hover {
 
 #historyContent {
     padding: 15px;
-    font-size: 14px;
+}
+
+#historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+#historyTable th, #historyTable td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
+
+#historyTable th {
+    background: #e0e7ef;
     color: #333;
-}
-
-#historyContent ul {
-    list-style: none;
-    padding: 0;
-}
-
-#historyContent li {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
 }

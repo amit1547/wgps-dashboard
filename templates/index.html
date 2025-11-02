@@ -23,7 +23,17 @@
                 <span id="sliderTitle">Device History</span>
                 <button onclick="closeSlider()">✖</button>
             </div>
-            <div id="historyContent">Select a device to view history</div>
+            <div id="historyContent">
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th><th>Lat</th><th>Lng</th>
+                            <th>MCC</th><th>MNC</th><th>LAC</th><th>CellID</th><th>CNT</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -51,19 +61,23 @@
                 .then(res => res.json())
                 .then(data => {
                     const slider = document.getElementById("historySlider");
-                    const content = document.getElementById("historyContent");
                     const title = document.getElementById("sliderTitle");
+                    const tbody = document.querySelector("#historyTable tbody");
                     title.textContent = `History: ${devid}`;
+                    tbody.innerHTML = "";
+
                     if (data.length === 0) {
-                        content.innerHTML = "<p>No history available</p>";
+                        tbody.innerHTML = '<tr><td colspan="8">No history available</td></tr>';
                     } else {
-                        content.innerHTML = `<ul>${data.map(d => `
-                            <li>
-                                <strong>${d.dtpt}</strong><br>
-                                Lat: ${d.lat}, Lng: ${d.lng}<br>
-                                MCC: ${d.mcc}, MNC: ${d.mnc}, LAC: ${d.lac}, CellID: ${d.cellid}, CNT: ${d.cnt}
-                            </li>`).join("")}</ul>`;
+                        data.forEach(d => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
+                                <td>${d.mcc}</td><td>${d.mnc}</td><td>${d.lac}</td><td>${d.cellid}</td><td>${d.cnt}</td>`;
+                            tbody.appendChild(row);
+                        });
                     }
+
                     slider.classList.add("open");
                 });
         }
