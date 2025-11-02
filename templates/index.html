@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wgps Web Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>📡 Wgps Web Dashboard</h1>
+
+    <input type="text" id="search" placeholder="Search Device ID...">
+
+    <!-- Main Dashboard Table -->
+    <table id="deviceTable">
+        <thead>
+            <tr>
+                <th>Device ID</th>
+                <th>Timestamp</th>
+                <th>MCC</th>
+                <th>MNC</th>
+                <th>LAC</th>
+                <th>Cell ID</th>
+                <th>Count</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>History</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Sliding History Panel -->
+    <div id="historyPanel">
+        <div class="historyContent">
+            <h2>📜 History for <span id="historyTitle"></span></h2>
+            <button onclick="closeHistory()">🔙 Back to Dashboard</button>
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Timestamp</th>
+                        <th>MCC</th>
+                        <th>MNC</th>
+                        <th>LAC</th>
+                        <th>Cell ID</th>
+                        <th>Count</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function loadDevices() {
+            const res = await fetch('/devices');
+            const data = await res.json();
+            const tbody = document.querySelector('#deviceTable tbody');
+            tbody.innerHTML = '';
+            const query = document.getElementById('search').value.toLowerCase();
+            data.sort((a, b) => a.devid.localeCompare(b.devid));
+            data.forEach((d, i) => {
+                if (d.devid.toLowerCase().includes(query)) {
+                    const row = document.createElement('tr');
+                    row.className = i % 2 === 0 ? 'evenrow' : 'oddrow';
+                    row.innerHTML = `
+                        <td>${d.devid}</td>
+                        <td>${d.dtpt}</td>
+                        <td>${d.mcc || ''}</td>
+                        <td>${d.mnc || ''}</td>
+                        <td>${d.lac || ''}</td>
+                        <td>${d.cellid || ''}</td>
+                        <td>${d.cnt || ''}</td>
+                        <td>${d.lat}</td>
+                        <td>${d.lng}</td>
+                        <td><button onclick="showHistory('${d.devid}')">View</button></td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        async function showHistory(devid) {
+            const res = await fetch(`/history/${devid}`);
+            const data = await res.json();
+            document.getElementById('historyTitle').textContent = devid;
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            data.forEach((d, i) => {
+                const row = document.createElement('tr');
+                row.className = i % 2 === 0 ? 'evenrow' : 'oddrow';
+                row.innerHTML = `
+                    <td>${d.devid}</td>
+                    <td>${d.dtpt}</td>
+                    <td>${d.mcc || ''}</td>
+                    <td>${d.mnc || ''}</td>
+                    <td>${d.lac || ''}</td>
+                    <td>${d.cellid || ''}</td>
+                    <td>${d.cnt || ''}</td>
+                    <td>${d.lat}</td>
+                    <td>${d.lng}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            document.getElementById('historyPanel').classList.add('open');
+        }
+
+        function closeHistory() {
+            document.getElementById('historyPanel').classList.remove('open');
+        }
+
+        document.getElementById('search').addEventListener('input', loadDevices);
+        setInterval(loadDevices, 3000);
+        loadDevices();
+    </script>
+</body>
+</html>

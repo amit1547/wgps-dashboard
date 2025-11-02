@@ -1,0 +1,7 @@
+{
+  "broker": "test-2-mqtt.syookinsite.com",
+  "port": 1883,
+  "username": "tnt",
+  "password": "syook2018",
+  "topic": "irwgps/WAPL/data/json"
+}
