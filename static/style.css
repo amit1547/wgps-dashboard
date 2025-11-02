@@ -1,17 +1,38 @@
 body {
     font-family: Arial;
     background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+.left-panel, .right-panel {
+    flex: 1;
     padding: 20px;
+    overflow-y: auto;
+}
+.left-panel {
+    background: #ffffff;
+    border-right: 1px solid #ccc;
+}
+.right-panel {
+    background: #f9f9f9;
 }
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
 }
 th, td {
     padding: 10px;
     border: 1px solid #ccc;
 }
-h1 {
-    text-align: center;
+h2 {
+    margin-top: 0;
+}
+button {
+    padding: 5px 10px;
+    cursor: pointer;
 }

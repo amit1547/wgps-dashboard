@@ -5,13 +5,21 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Device Dashboard</h1>
-    <table id="deviceTable">
-        <thead>
-            <tr><th>ID</th><th>Time</th><th>Lat</th><th>Lng</th><th>History</th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Device Table</h2>
+            <table id="deviceTable">
+                <thead>
+                    <tr><th>ID</th><th>Time</th><th>Lat</th><th>Lng</th><th>History</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="right-panel">
+            <h2>Device History</h2>
+            <div id="historyPanel">Select a device to view history</div>
+        </div>
+    </div>
     <script>
         fetch('/devices')
             .then(res => res.json())
@@ -33,7 +41,12 @@
             fetch(`/history/${devid}`)
                 .then(res => res.json())
                 .then(data => {
-                    alert(`History for ${devid}:\n` + data.map(d => d.dtpt).join("\n"));
+                    const panel = document.getElementById("historyPanel");
+                    if (data.length === 0) {
+                        panel.innerHTML = "No history available";
+                        return;
+                    }
+                    panel.innerHTML = `<ul>${data.map(d => `<li>${d.dtpt} → ${d.lat}, ${d.lng}</li>`).join("")}</ul>`;
                 });
         }
     </script>
