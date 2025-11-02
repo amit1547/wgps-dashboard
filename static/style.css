@@ -1,38 +1,104 @@
 body {
-    font-family: Arial;
-    background: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    padding: 0;
+    background: #eef2f5;
 }
+
 .container {
     display: flex;
-    flex-direction: row;
     height: 100vh;
+    overflow: hidden;
 }
-.left-panel, .right-panel {
+
+.left-panel {
     flex: 1;
     padding: 20px;
-    overflow-y: auto;
-}
-.left-panel {
     background: #ffffff;
+    overflow-y: auto;
     border-right: 1px solid #ccc;
 }
-.right-panel {
-    background: #f9f9f9;
+
+.left-panel h2 {
+    margin-top: 0;
+    color: #333;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
+    background: #fdfdfd;
 }
+
 th, td {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
 }
-h2 {
-    margin-top: 0;
+
+th {
+    background: #f0f0f0;
+    color: #555;
 }
+
 button {
-    padding: 5px 10px;
+    padding: 6px 12px;
+    background: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
+}
+
+button:hover {
+    background: #005ea2;
+}
+
+.history-slider {
+    width: 0;
+    transition: width 0.4s ease;
+    background: #f9fbfc;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.history-slider.open {
+    width: 400px;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #0078d4;
+    color: white;
+    font-size: 16px;
+}
+
+.slider-header button {
+    background: transparent;
+    color: white;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+#historyContent {
+    padding: 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+#historyContent ul {
+    list-style: none;
+    padding: 0;
+}
+
+#historyContent li {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
 }

@@ -10,28 +10,37 @@
             <h2>Device Table</h2>
             <table id="deviceTable">
                 <thead>
-                    <tr><th>ID</th><th>Time</th><th>Lat</th><th>Lng</th><th>History</th></tr>
+                    <tr>
+                        <th>ID</th><th>Time</th><th>Lat</th><th>Lng</th>
+                        <th>MCC</th><th>MNC</th><th>LAC</th><th>CellID</th><th>CNT</th><th>History</th>
+                    </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-        <div class="right-panel">
-            <h2>Device History</h2>
-            <div id="historyPanel">Select a device to view history</div>
+        <div class="history-slider" id="historySlider">
+            <div class="slider-header">
+                <span id="sliderTitle">Device History</span>
+                <button onclick="closeSlider()">✖</button>
+            </div>
+            <div id="historyContent">Select a device to view history</div>
         </div>
     </div>
+
     <script>
         fetch('/devices')
             .then(res => res.json())
             .then(data => {
                 const tbody = document.querySelector("#deviceTable tbody");
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">No device data available</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10">No device data available</td></tr>';
                     return;
                 }
                 data.forEach(d => {
                     const row = document.createElement("tr");
-                    row.innerHTML = `<td>${d.devid}</td><td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
+                    row.innerHTML = `
+                        <td>${d.devid}</td><td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
+                        <td>${d.mcc}</td><td>${d.mnc}</td><td>${d.lac}</td><td>${d.cellid}</td><td>${d.cnt}</td>
                         <td><button onclick="viewHistory('${d.devid}')">View</button></td>`;
                     tbody.appendChild(row);
                 });
@@ -41,13 +50,26 @@
             fetch(`/history/${devid}`)
                 .then(res => res.json())
                 .then(data => {
-                    const panel = document.getElementById("historyPanel");
+                    const slider = document.getElementById("historySlider");
+                    const content = document.getElementById("historyContent");
+                    const title = document.getElementById("sliderTitle");
+                    title.textContent = `History: ${devid}`;
                     if (data.length === 0) {
-                        panel.innerHTML = "No history available";
-                        return;
+                        content.innerHTML = "<p>No history available</p>";
+                    } else {
+                        content.innerHTML = `<ul>${data.map(d => `
+                            <li>
+                                <strong>${d.dtpt}</strong><br>
+                                Lat: ${d.lat}, Lng: ${d.lng}<br>
+                                MCC: ${d.mcc}, MNC: ${d.mnc}, LAC: ${d.lac}, CellID: ${d.cellid}, CNT: ${d.cnt}
+                            </li>`).join("")}</ul>`;
                     }
-                    panel.innerHTML = `<ul>${data.map(d => `<li>${d.dtpt} → ${d.lat}, ${d.lng}</li>`).join("")}</ul>`;
+                    slider.classList.add("open");
                 });
+        }
+
+        function closeSlider() {
+            document.getElementById("historySlider").classList.remove("open");
         }
     </script>
 </body>
