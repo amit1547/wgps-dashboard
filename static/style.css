@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    background: #eef2f5;
+    background: #f0f2f5;
 }
 
 .container {
@@ -23,22 +23,40 @@ body {
     color: #333;
 }
 
+label, select {
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+select {
+    padding: 6px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #fdfdfd;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 th, td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #e0e0e0;
     text-align: left;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 th {
-    background: #f0f0f0;
-    color: #555;
+    background: #f7f9fb;
+    color: #444;
+}
+
+tr:hover {
+    background-color: #f1f5f9;
 }
 
 button {
@@ -48,6 +66,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 button:hover {

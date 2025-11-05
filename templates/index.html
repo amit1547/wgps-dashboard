@@ -8,6 +8,10 @@
     <div class="container">
         <div class="left-panel">
             <h2>Device Table</h2>
+            <label for="deviceFilter">Filter by Device ID:</label>
+            <select id="deviceFilter" onchange="filterDevices()">
+                <option value="all">All Devices</option>
+            </select>
             <table id="deviceTable">
                 <thead>
                     <tr>
@@ -38,23 +42,53 @@
     </div>
 
     <script>
+        let allDevices = [];
+
         fetch('/devices')
             .then(res => res.json())
             .then(data => {
-                const tbody = document.querySelector("#deviceTable tbody");
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="10">No device data available</td></tr>';
-                    return;
-                }
-                data.forEach(d => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${d.devid}</td><td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
-                        <td>${d.mcc}</td><td>${d.mnc}</td><td>${d.lac}</td><td>${d.cellid}</td><td>${d.cnt}</td>
-                        <td><button onclick="viewHistory('${d.devid}')">View</button></td>`;
-                    tbody.appendChild(row);
-                });
+                allDevices = data;
+                populateDeviceTable(data);
+                populateDeviceFilter(data);
             });
+
+        function populateDeviceTable(data) {
+            const tbody = document.querySelector("#deviceTable tbody");
+            tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10">No device data available</td></tr>';
+                return;
+            }
+            data.forEach(d => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${d.devid}</td><td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
+                    <td>${d.mcc}</td><td>${d.mnc}</td><td>${d.lac}</td><td>${d.cellid}</td><td>${d.cnt}</td>
+                    <td><button onclick="viewHistory('${d.devid}')">View</button></td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateDeviceFilter(data) {
+            const select = document.getElementById("deviceFilter");
+            const uniqueIds = [...new Set(data.map(d => d.devid))];
+            uniqueIds.forEach(id => {
+                const option = document.createElement("option");
+                option.value = id;
+                option.textContent = id;
+                select.appendChild(option);
+            });
+        }
+
+        function filterDevices() {
+            const selected = document.getElementById("deviceFilter").value;
+            if (selected === "all") {
+                populateDeviceTable(allDevices);
+            } else {
+                const filtered = allDevices.filter(d => d.devid === selected);
+                populateDeviceTable(filtered);
+            }
+        }
 
         function viewHistory(devid) {
             fetch(`/history/${devid}`)
@@ -69,7 +103,7 @@
                     if (data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="8">No history available</td></tr>';
                     } else {
-                        data.forEach(d => {
+                        data.reverse().forEach(d => {
                             const row = document.createElement("tr");
                             row.innerHTML = `
                                 <td>${d.dtpt}</td><td>${d.lat}</td><td>${d.lng}</td>
