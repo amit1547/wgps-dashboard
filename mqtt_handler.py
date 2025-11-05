@@ -3,9 +3,10 @@ import json
 import threading
 import paho.mqtt.client as mqtt
 
-# ✅ Use persistent path for Render
-LOG_DIR = "/var/data" if os.path.exists("/var/data") else "/data"
-LOG_FILE = os.path.join(LOG_DIR, "mqtt_device_log.txt")
+# ✅ Store log file one directory above current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(BASE_DIR)
+LOG_FILE = os.path.join(PARENT_DIR, "mqtt_device_log.txt")
 
 log_lock = threading.Lock()
 
@@ -14,7 +15,7 @@ def on_message(client, userdata, msg):
         payload = msg.payload.decode("utf-8")
         data = json.loads(payload)
         line = json.dumps(data)
-        os.makedirs(LOG_DIR, exist_ok=True)  # ✅ Ensure directory exists
+        os.makedirs(PARENT_DIR, exist_ok=True)  # ✅ Ensure parent directory exists
         with log_lock:
             with open(LOG_FILE, "a") as f:
                 f.write(line + "\n")
