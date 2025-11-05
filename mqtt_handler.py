@@ -1,14 +1,12 @@
 import os
 import json
 import threading
-import time
 import paho.mqtt.client as mqtt
 
-# ✅ Dynamic path for Render or local
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = os.path.join(BASE_DIR, "mqtt_device_log.txt")
+# ✅ Use persistent path for Render
+LOG_DIR = "/var/data" if os.path.exists("/var/data") else "/data"
+LOG_FILE = os.path.join(LOG_DIR, "mqtt_device_log.txt")
 
-# ✅ Thread-safe log writing
 log_lock = threading.Lock()
 
 def on_message(client, userdata, msg):
@@ -16,6 +14,7 @@ def on_message(client, userdata, msg):
         payload = msg.payload.decode("utf-8")
         data = json.loads(payload)
         line = json.dumps(data)
+        os.makedirs(LOG_DIR, exist_ok=True)  # ✅ Ensure directory exists
         with log_lock:
             with open(LOG_FILE, "a") as f:
                 f.write(line + "\n")
@@ -39,7 +38,6 @@ def start_mqtt():
     except Exception as e:
         print("MQTT connection failed:", e)
 
-# ✅ Parse latest data per device
 def get_latest_data():
     if not os.path.exists(LOG_FILE):
         print("Log file not found")
@@ -56,7 +54,6 @@ def get_latest_data():
                 continue
     return list(latest.values())
 
-# ✅ Parse full history for a device
 def get_device_history(devid):
     if not os.path.exists(LOG_FILE):
         print("Log file not found")
