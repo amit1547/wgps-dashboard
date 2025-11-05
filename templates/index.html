@@ -7,11 +7,9 @@
 <body>
     <div class="container">
         <div class="left-panel">
-            <h2>Device Table</h2>
-            <label for="deviceFilter">Filter by Device ID:</label>
-            <select id="deviceFilter" onchange="filterDevices()">
-                <option value="all">All Devices</option>
-            </select>
+            <h2>📡 Device Dashboard</h2>
+            <label for="deviceFilter">Select Devices:</label>
+            <select id="deviceFilter" multiple onchange="filterDevices()"></select>
             <table id="deviceTable">
                 <thead>
                     <tr>
@@ -81,11 +79,11 @@
         }
 
         function filterDevices() {
-            const selected = document.getElementById("deviceFilter").value;
-            if (selected === "all") {
+            const selected = Array.from(document.getElementById("deviceFilter").selectedOptions).map(opt => opt.value);
+            if (selected.length === 0) {
                 populateDeviceTable(allDevices);
             } else {
-                const filtered = allDevices.filter(d => d.devid === selected);
+                const filtered = allDevices.filter(d => selected.includes(d.devid));
                 populateDeviceTable(filtered);
             }
         }
