@@ -25,19 +25,52 @@ body {
     font-size: 22px;
 }
 
-label {
-    font-weight: bold;
-    margin-bottom: 5px;
+.filter-container {
+    margin-bottom: 15px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: #0078d4;
+    color: white;
+    padding: 8px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 200px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    padding: 10px;
+    z-index: 1;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.dropdown:hover .dropdown-content {
     display: block;
 }
 
-select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-    background: #f0f8ff;
+.dropdown-content label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.dropdown-content input[type="checkbox"] {
+    margin-right: 6px;
 }
 
 table {

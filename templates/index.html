@@ -8,8 +8,13 @@
     <div class="container">
         <div class="left-panel">
             <h2>📡 Device Dashboard</h2>
-            <label for="deviceFilter">Select Devices:</label>
-            <select id="deviceFilter" multiple onchange="filterDevices()"></select>
+            <div class="filter-container">
+                <label>Filter Devices:</label>
+                <div class="dropdown">
+                    <button class="dropbtn">Select Devices ⬇</button>
+                    <div class="dropdown-content" id="deviceCheckboxes"></div>
+                </div>
+            </div>
             <table id="deviceTable">
                 <thead>
                     <tr>
@@ -47,7 +52,7 @@
             .then(data => {
                 allDevices = data;
                 populateDeviceTable(data);
-                populateDeviceFilter(data);
+                populateDeviceCheckboxes(data);
             });
 
         function populateDeviceTable(data) {
@@ -67,23 +72,22 @@
             });
         }
 
-        function populateDeviceFilter(data) {
-            const select = document.getElementById("deviceFilter");
+        function populateDeviceCheckboxes(data) {
+            const container = document.getElementById("deviceCheckboxes");
             const uniqueIds = [...new Set(data.map(d => d.devid))];
             uniqueIds.forEach(id => {
-                const option = document.createElement("option");
-                option.value = id;
-                option.textContent = id;
-                select.appendChild(option);
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value="${id}" onchange="filterDevices()"> ${id}`;
+                container.appendChild(label);
             });
         }
 
         function filterDevices() {
-            const selected = Array.from(document.getElementById("deviceFilter").selectedOptions).map(opt => opt.value);
-            if (selected.length === 0) {
+            const checked = Array.from(document.querySelectorAll("#deviceCheckboxes input:checked")).map(cb => cb.value);
+            if (checked.length === 0) {
                 populateDeviceTable(allDevices);
             } else {
-                const filtered = allDevices.filter(d => selected.includes(d.devid));
+                const filtered = allDevices.filter(d => checked.includes(d.devid));
                 populateDeviceTable(filtered);
             }
         }
